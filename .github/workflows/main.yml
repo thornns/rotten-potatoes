@@ -12,24 +12,24 @@ jobs:
         uses: docker/build-push-action@v2.7.0
         with:
           context: ./src/
-	  file: /src/Dockerfile
-	  push: true
-	  tags: |
-      thorkks/rotten-potatoes:latest
-      thorkks/rotten-potatoes:${{ github.run_number }}
+          file: ./src/Dockerfile
+          push: true
+          tags: |
+            thorkks/rotten-potatoes:latest
+            thorkks/rotten-potatoes:${{ github.run_number }}
   CD:
     needs: [CI]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Kubernetes Set Context
-	      uses: Azure/k8s-set-context@v1.1
-	      with:
-	        method: kubeconfig
-	        kubeconfig: ${{ secrets.KUBECONFIG }}
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: Kubernetes Deploy
-	      uses: Azure/k8s-deploy@v1.3
-	      with:
-	        images: thorkks/rotten-potatoes:${{ github.run_number }}
-	        manifests: |
+        uses: Azure/k8s-deploy@v1.3
+        with:
+          images: thorkks/rotten-potatoes:${{ github.run_number }}
+          manifests: |
             deployment.yaml
